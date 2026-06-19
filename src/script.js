@@ -1,17 +1,17 @@
 
 let editor;
 const definitionFiles = [
-     "typings/shared/global.d.ts"
-    ,"typings/shared/JavaScript.d.ts"
-    ,"typings/shared/PlugPlugExternalObject.d.ts"
-    ,"typings/shared/ScriptUI.d.ts"
-    ,"typings/shared/XMPScript.d.ts"
-    ,"typings/Photoshop/2015.5/index.d.ts"
+     "types/shared/global.d.ts"
+    ,"types/shared/JavaScript.d.ts"
+    ,"types/shared/PlugPlugExternalObject.d.ts"
+    ,"types/shared/ScriptUI.d.ts"
+    ,"types/shared/XMPScript.d.ts"
+    ,"types/Photoshop/2015.5/index.d.ts"
 ];
 
 const tsconfigFiles = [
-     "typings/Photoshop/2015.5/tsconfig.json"
-    ,"typings/shared/tsconfig.json"
+     "types/Photoshop/2015.5/tsconfig.json"
+    ,"types/shared/tsconfig.json"
 ];
 
 require.config({
@@ -88,7 +88,7 @@ async function loadTypeDefinitions() {
 
 document.getElementById("run").onclick=function() {
     const code = editor.getValue();
-    console.log(code);
+    // console.log(code);
     window.parent.postMessage(code, "*");
 };
 
