@@ -37,6 +37,10 @@ require(["vs/editor/editor.main"], async function() {
         {
             value:
 `// Template:
+// THIS PLUGIN EDITOR IS IN BETA
+// WARNING: it loses your pending changes when you hide this view
+// use at your own risk
+
 alert("Hello Photopea scripters!");
 `,
             language:"javascript",
