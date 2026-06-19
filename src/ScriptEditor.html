@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Photopea Script Editor</title>
+    <link rel="icon" type="image/x-icon" href="icon.png">
+    <link href="styles.css" rel="stylesheet" />
+</head>
+
+
+<body>
+
+<div id="toolbar">
+    <button id="run">Run</button>
+    <button id="save">Save</button>
+    <button id="load">Load</button>
+
+    <input 
+        id="fileInput"
+        type="file"
+        accept=".txt,.js,.jsx,.jsxbin"
+        hidden>
+</div>
+
+<div id="editor"></div>
+<div id="dropZone"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.0/min/vs/loader.min.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
