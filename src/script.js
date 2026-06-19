@@ -57,7 +57,7 @@ require(["vs/editor/editor.main"], async function() {
 		localStorage.setItem(scriptAutoSaveLocalStorageKey, currentScriptCode);
 	});
 
-	await loadTypeDefinitions();
+	//await loadTypeDefinitions(); // TODO: make this work and not throw errors.
 });
 
 
@@ -163,9 +163,9 @@ for(var i=1; i<cnt; i++)
 `,
 };
 
-document.getElementById("demo-hello").onclick = () => editor.setValue(demos.hello);
-document.getElementById("demo-process-layers").onclick = () => editor.setValue(demos.processLayers);
-document.getElementById("demo-clone-layers").onclick = () => editor.setValue(demos.processCloneLayers);
+document.getElementById("demo-hello").onclick = () => setEditorContent(demos.hello);
+document.getElementById("demo-process-layers").onclick = () => setEditorContent(demos.processLayers);
+document.getElementById("demo-clone-layers").onclick = () => setEditorContent(demos.processCloneLayers);
 
 
 // Drag & Drop
@@ -203,11 +203,23 @@ document.addEventListener("drop", (e) => {
 function loadFile(file) {
 	var reader = new FileReader();
 	reader.onload = () => {
-		editor.setValue(reader.result);
+		setEditorContent(reader.result);
+		// editor.setValue(reader.result);
 	};
 	reader.readAsText(file);
 }
 
+// Unlike "editor.setValue()" this preserves document history:
+function setEditorContent(newText) {
+	const model = editor.getModel();
+	model.pushEditOperations([],
+		[{
+			range: model.getFullModelRange(),
+			text: newText
+		}],
+		() => null
+	);
+}
 
 // Required when the focus is outside the Monaco editor, like the top buttons.
 document.addEventListener("keydown", (e) => {
