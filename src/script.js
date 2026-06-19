@@ -50,20 +50,30 @@ require(["vs/editor/editor.main"], async function() {
 	editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, saveFile);
 	editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyO, openLoadDialog);
 
-	const model = editor.getModel();
-	model.onDidChangeContent(() => {
-		var currentScriptCode = model.getValue();
-		// console.log("auto-saved script in local-storage");
-		localStorage.setItem(scriptAutoSaveLocalStorageKey, currentScriptCode);
-	});
+	// var model = monaco.editor.createModel(editorValue, "javascript", monaco.Uri.parse("file:///types/Photoshop/2015.5/index.d.ts"));
+	// editor.setModel(model);
 
+	var model = editor.getModel();
+	model.onDidChangeContent(() => autoSaveInLocalStorageWithDebounce(model));
 	//await loadTypeDefinitions(); // TODO: make this work and not throw errors.
 });
 
+function autoSaveInLocalStorage(model) {
+	var currentScriptCode = model.getValue();
+	localStorage.setItem(scriptAutoSaveLocalStorageKey, currentScriptCode);
+	// console.log("auto-saved script in local-storage");
+}
+var timeout;
+var autoSaveMaxMs = 400;
+function autoSaveInLocalStorageWithDebounce(model) {
+	clearTimeout(timeout);
+	timeout = setTimeout(() => autoSaveInLocalStorage(model), autoSaveMaxMs);
+}
 
 // Load .d.ts for Intellisense
 async function loadTypeDefinitions() {
-	var tsDefaults = monaco.languages.typescript.javascriptDefaults;
+	// var tsDefaults = monaco.languages.typescript.javascriptDefaults;
+	var tsDefaults = monaco.languages.typescript.typescriptDefaults;
 	for (var file of definitionFiles) {
 		try {
 			var response = await fetch(file);
@@ -140,13 +150,14 @@ alert("Hello Photopea scripters!");
 alert("Hello Photopea!");
 `,
 	processLayers: `
-var lays = app.activeDocument.layers;
+var topLayers = app.activeDocument.layers;
 
-for(var i=0; i<lays.length; i++)
+for (var i=0; i < topLayers.length; i++)
 {
-	//lays[i].visible = false;
-	//lays[i].opacity = 50;
-	lays[i].name = "My Layer "+i;
+	var layer = topLayers[i];
+	// layer.visible = false;
+	// layer.opacity = 50;
+	layer.name = "My Layer " + i;
 }
 `,
 	processCloneLayers: `
@@ -212,13 +223,12 @@ function loadFile(file) {
 // Unlike "editor.setValue()" this preserves document history:
 function setEditorContent(newText) {
 	const model = editor.getModel();
-	model.pushEditOperations([],
-		[{
-			range: model.getFullModelRange(),
-			text: newText
-		}],
-		() => null
-	);
+	editor.pushUndoStop();
+	editor.executeEdits('replace-doc', [{
+		range: editor.getModel().getFullModelRange(),
+		text: newText
+	}]);
+	editor.pushUndoStop();
 }
 
 // Required when the focus is outside the Monaco editor, like the top buttons.
