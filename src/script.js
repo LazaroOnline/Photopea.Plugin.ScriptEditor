@@ -91,8 +91,8 @@ require(["vs/editor/editor.main"], async function() {
 	editor = monaco.editor.create(monacoElement, editorOptions);
 	editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, runCode);
 	editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.shiftKey | monaco.KeyCode.KeyS, saveFileAs);
-	editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, saveFileV2);
-	editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyO, openFileDialogV2);
+	editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, saveFileTry);
+	editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyO, openFileDialogTry);
 
 	// var model = monaco.editor.createModel(editorValue, "javascript", monaco.Uri.parse("file:///types/Photoshop/2015.5/index.d.ts"));
 	// editor.setModel(model);
@@ -173,6 +173,13 @@ function setIsDirty(newValue) {
 	saveButton.disabled = !isDirty;
 }
 
+async function openFileDialogTry() {
+	try {
+		await openFileDialogV2();
+	} catch {
+		await openFileDialogV1();
+	}
+}
 async function openFileDialogV2() {
 	var [fileHandle] = await window.showOpenFilePicker({
 		excludeAcceptAllOption: false,
@@ -201,9 +208,16 @@ async function saveFileAs() {
 	setIsDirty(false);
 }
 
+async function saveFileTry() {
+	try {
+		await saveFileV2();
+	} catch {
+		saveFileV1();
+	}
+}
 async function saveFileV2() {
 	if (!currentFileHandle) {
-		saveFileAs();
+		await saveFileAs();
 		return;
 	}
 	// if (!isDirty) { return; }
@@ -236,9 +250,9 @@ fileInput.onchange = (e) => {
 }
 
 document.getElementById("run").onclick = runCode;
-document.getElementById("save").onclick = saveFileV2;
+document.getElementById("save").onclick = saveFileTry;
 document.getElementById("save-as").onclick = saveFileAs;
-document.getElementById("load").onclick = openFileDialogV2;
+document.getElementById("load").onclick = openFileDialogTry;
 
 document.getElementById("demo-hello").onclick = () => setEditorContent(demos.hello);
 document.getElementById("demo-process-layers").onclick = () => setEditorContent(demos.processLayers);
@@ -301,12 +315,12 @@ document.addEventListener("keydown", (e) => {
 		e.preventDefault();
 	}
 	if (e.ctrlKey && e.key.toUpperCase() === 'S') {
-		saveFileV2();
+		saveFileTry();
 		e.stopPropagation();
 		e.preventDefault();
 	}
 	if (e.ctrlKey && e.key.toUpperCase() === 'O') {
-		openFileDialogV2();
+		openFileDialogTry();
 		e.stopPropagation();
 		e.preventDefault();
 	}
