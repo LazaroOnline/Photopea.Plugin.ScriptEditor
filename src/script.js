@@ -53,7 +53,7 @@ require(["vs/editor/editor.main"], async function() {
 	const model = editor.getModel();
 	model.onDidChangeContent(() => {
 		var currentScriptCode = model.getValue();
-		console.log("auto-saved");
+		// console.log("auto-saved script in local-storage");
 		localStorage.setItem(scriptAutoSaveLocalStorageKey, currentScriptCode);
 	});
 
