@@ -99,6 +99,7 @@ require(["vs/editor/editor.main"], async function() {
 
 	var model = editor.getModel();
 	model.onDidChangeContent(() => autoSaveInLocalStorageWithDebounce(model));
+	editor.onDidChangeModelContent(() => setIsDirty(true));
 	//await loadTypeDefinitions(); // TODO: make this work and not throw errors.
 });
 
@@ -156,6 +157,7 @@ function autoSaveInLocalStorageWithDebounce(model) {
 }
 var currentFileHandle;
 var currentFileName;
+var isDirty = false;
 function setCurrentFileName(fileName) {
 	currentFileName = fileName;
 	var fileNameElement = document.getElementById("filename");
@@ -164,6 +166,11 @@ function setCurrentFileName(fileName) {
 function setCurrentFileHandle(fileHandle) {
 	currentFileHandle = fileHandle;
 	setCurrentFileName(fileHandle.name);
+}
+function setIsDirty(newValue) {
+	isDirty = newValue;
+	var saveButton = document.getElementById("save");
+	saveButton.disabled = !isDirty;
 }
 
 async function openFileDialogV2() {
@@ -181,6 +188,7 @@ async function openFileDialogV2() {
 	var fileContent = await file.text();
 	//setEditorContent(fileContent);
 	editor.setValue(fileContent);
+	setIsDirty(false);
 }
 
 async function saveFileAs() {
@@ -190,6 +198,7 @@ async function saveFileAs() {
 	var writable = await fileHandle.createWritable();
 	await writable.write(editor.getValue());
 	await writable.close();
+	setIsDirty(false);
 }
 
 async function saveFileV2() {
@@ -197,9 +206,11 @@ async function saveFileV2() {
 		saveFileAs();
 		return;
 	}
+	// if (!isDirty) { return; }
 	var writable = await currentFileHandle.createWritable();
 	await writable.write(editor.getValue());
 	await writable.close();
+	setIsDirty(false);
 }
 
 function saveFileV1() {

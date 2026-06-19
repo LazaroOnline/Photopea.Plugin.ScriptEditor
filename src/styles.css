@@ -26,9 +26,13 @@ button {
 	cursor:pointer;
 	border-radius: 2px;
 }
-
 button:hover {
 	background:#1177bb;
+}
+button:disabled {
+	background:#555555;
+	color:#989898;
+	cursor: auto;
 }
 
 #editor {
@@ -78,6 +82,9 @@ button:hover {
 #save-as {
 	position: absolute;
 	left: -63px;
+	width: 100px;
+	width: 84px;
+	padding-right: 1px;
 }
 
 .tab-name {
