@@ -12,7 +12,15 @@
 
 <div id="toolbar">
 	<button id="run" title="Ctrl+Enter">Run</button>
-	<button id="save" title="Ctrl+S">Save</button>
+	<div style="display: flex;">
+		<button id="save" title="Ctrl+S">Save</button>
+		<div class="dropdown">
+			<button class="button-side-dropdown">▾</button>
+			<div class="dropdown-content">
+				<button id="save-as" class="dropdown-item" title="Ctrl+Shift+S">Save As...</button>
+			</div>
+		</div>
+	</div>
 	<button id="load" title="Ctrl+O">Load</button>
 	<input id="fileInput" type="file" accept=".txt,.js,.jsx,.jsxbin" hidden>
 
@@ -24,6 +32,9 @@
 			<button class="dropdown-item" id="demo-clone-layers">Clone Layers</button>
 		</div>
 	</div>
+</div>
+<div>
+	<div id="filename" class="tab-name"></div>
 </div>
 
 <div id="editor"></div>

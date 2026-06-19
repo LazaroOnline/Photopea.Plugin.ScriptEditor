@@ -15,6 +15,49 @@ var tsconfigFiles = [
 ];
 var scriptAutoSaveLocalStorageKey = "script_auto_save";
 
+var fileExtensionsAllowed = [
+	".txt",
+	".js",
+	".jsx",
+	".jsxbin"
+];
+
+var demos = {
+	default: `
+// THIS PLUGIN EDITOR IS IN BETA
+// WARNING: the save feature is unstable yet, make copies of your scripts.
+// use at your own risk
+
+alert("Hello Photopea scripters!");
+`,
+	hello: `
+alert("Hello Photopea!");
+`,
+	processLayers: `
+var topLayers = app.activeDocument.layers;
+
+for (var i=0; i < topLayers.length; i++)
+{
+	var layer = topLayers[i];
+	// layer.visible = false;
+	// layer.opacity = 50;
+	layer.name = "My Layer " + i;
+}
+`,
+	processCloneLayers: `
+var orig = app.activeDocument.activeLayer;
+var cnt = 12;
+var angle = Math.floor(360 / cnt);
+
+for(var i=1; i<cnt; i++)
+{
+	var nlay = orig.duplicate();
+	//nlay.translate(30*i, 20*i);
+	nlay.rotate(angle * i, AnchorPosition.BOTTOMCENTER);
+}
+`,
+};
+
 require.config({
 	paths: {
 		vs:"https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.0/min/vs"
@@ -47,8 +90,9 @@ require(["vs/editor/editor.main"], async function() {
 	};
 	editor = monaco.editor.create(monacoElement, editorOptions);
 	editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, runCode);
-	editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, saveFile);
-	editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyO, openLoadDialog);
+	editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.shiftKey | monaco.KeyCode.KeyS, saveFileAs);
+	editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, saveFileV2);
+	editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyO, openFileDialogV2);
 
 	// var model = monaco.editor.createModel(editorValue, "javascript", monaco.Uri.parse("file:///types/Photoshop/2015.5/index.d.ts"));
 	// editor.setModel(model);
@@ -57,18 +101,6 @@ require(["vs/editor/editor.main"], async function() {
 	model.onDidChangeContent(() => autoSaveInLocalStorageWithDebounce(model));
 	//await loadTypeDefinitions(); // TODO: make this work and not throw errors.
 });
-
-function autoSaveInLocalStorage(model) {
-	var currentScriptCode = model.getValue();
-	localStorage.setItem(scriptAutoSaveLocalStorageKey, currentScriptCode);
-	// console.log("auto-saved script in local-storage");
-}
-var timeout;
-var autoSaveMaxMs = 400;
-function autoSaveInLocalStorageWithDebounce(model) {
-	clearTimeout(timeout);
-	timeout = setTimeout(() => autoSaveInLocalStorage(model), autoSaveMaxMs);
-}
 
 // Load .d.ts for Intellisense
 async function loadTypeDefinitions() {
@@ -111,8 +143,66 @@ function runCode() {
 	window.parent.postMessage(code, "*");
 }
 
+function autoSaveInLocalStorage(model) {
+	var currentScriptCode = model.getValue();
+	localStorage.setItem(scriptAutoSaveLocalStorageKey, currentScriptCode);
+	// console.log("auto-saved script in local-storage");
+}
+var timeout;
+var autoSaveMaxMs = 400;
+function autoSaveInLocalStorageWithDebounce(model) {
+	clearTimeout(timeout);
+	timeout = setTimeout(() => autoSaveInLocalStorage(model), autoSaveMaxMs);
+}
+var currentFileHandle;
+var currentFileName;
+function setCurrentFileName(fileName) {
+	currentFileName = fileName;
+	var fileNameElement = document.getElementById("filename");
+	fileNameElement.innerText = currentFileName;
+}
+function setCurrentFileHandle(fileHandle) {
+	currentFileHandle = fileHandle;
+	setCurrentFileName(fileHandle.name);
+}
 
-function saveFile() {
+async function openFileDialogV2() {
+	var [fileHandle] = await window.showOpenFilePicker({
+		excludeAcceptAllOption: false,
+		multiple: false,
+		types: [{
+			description: "Text files and scripts",
+			accept: { "text/plain": fileExtensionsAllowed }
+		}],
+	});
+
+	setCurrentFileHandle(fileHandle);
+	var file = await fileHandle.getFile();
+	var fileContent = await file.text();
+	//setEditorContent(fileContent);
+	editor.setValue(fileContent);
+}
+
+async function saveFileAs() {
+	// var fileHandle = await window.showSaveFilePicker({ suggestedName: "script.jsx" });
+	fileHandle = await window.showSaveFilePicker({ suggestedName: "script.jsx" });
+	setCurrentFileHandle(fileHandle)
+	var writable = await fileHandle.createWritable();
+	await writable.write(editor.getValue());
+	await writable.close();
+}
+
+async function saveFileV2() {
+	if (!currentFileHandle) {
+		saveFileAs();
+		return;
+	}
+	var writable = await currentFileHandle.createWritable();
+	await writable.write(editor.getValue());
+	await writable.close();
+}
+
+function saveFileV1() {
 	console.log("Saving script file...");
 	var blob = new Blob([editor.getValue()], { type:"text/javascript" });
 	var url = URL.createObjectURL(blob);
@@ -125,7 +215,7 @@ function saveFile() {
 
 
 var fileInput = document.getElementById("fileInput");
-function openLoadDialog() {
+function openFileDialogV1() {
 	fileInput.click();
 }
 
@@ -135,44 +225,9 @@ fileInput.onchange = (e) => {
 }
 
 document.getElementById("run").onclick = runCode;
-document.getElementById("save").onclick = saveFile;
-document.getElementById("load").onclick = openLoadDialog;
-
-var demos = {
-	default: `
-// THIS PLUGIN EDITOR IS IN BETA
-// WARNING: the save feature is unstable yet, make copies of your scripts.
-// use at your own risk
-
-alert("Hello Photopea scripters!");
-`,
-	hello: `
-alert("Hello Photopea!");
-`,
-	processLayers: `
-var topLayers = app.activeDocument.layers;
-
-for (var i=0; i < topLayers.length; i++)
-{
-	var layer = topLayers[i];
-	// layer.visible = false;
-	// layer.opacity = 50;
-	layer.name = "My Layer " + i;
-}
-`,
-	processCloneLayers: `
-var orig = app.activeDocument.activeLayer;
-var cnt = 12;
-var angle = Math.floor(360 / cnt);
-
-for(var i=1; i<cnt; i++)
-{
-	var nlay = orig.duplicate();
-	//nlay.translate(30*i, 20*i);
-	nlay.rotate(angle * i, AnchorPosition.BOTTOMCENTER);
-}
-`,
-};
+document.getElementById("save").onclick = saveFileV2;
+document.getElementById("save-as").onclick = saveFileAs;
+document.getElementById("load").onclick = openFileDialogV2;
 
 document.getElementById("demo-hello").onclick = () => setEditorContent(demos.hello);
 document.getElementById("demo-process-layers").onclick = () => setEditorContent(demos.processLayers);
@@ -190,13 +245,6 @@ document.addEventListener("dragover", (e) => {
 document.addEventListener("dragleave", () => {
 	dropZone.classList.remove("drag");
 });
-
-var fileExtensionsAllowed = [
-	".txt",
-	".js",
-	".jsx",
-	".jsxbin"
-];
 
 document.addEventListener("drop", (e) => {
 	e.preventDefault();
@@ -222,7 +270,7 @@ function loadFile(file) {
 
 // Unlike "editor.setValue()" this preserves document history:
 function setEditorContent(newText) {
-	const model = editor.getModel();
+	var model = editor.getModel();
 	editor.pushUndoStop();
 	editor.executeEdits('replace-doc', [{
 		range: editor.getModel().getFullModelRange(),
@@ -236,13 +284,18 @@ document.addEventListener("keydown", (e) => {
 	if (e.ctrlKey && e.key === 'Enter') {
 		runCode();
 	}
+	if (e.ctrlKey && e.shiftKey && e.key.toUpperCase() === 'S') {
+		saveFileAs();
+		e.stopPropagation();
+		e.preventDefault();
+	}
 	if (e.ctrlKey && e.key.toUpperCase() === 'S') {
-		saveFile();
+		saveFileV2();
 		e.stopPropagation();
 		e.preventDefault();
 	}
 	if (e.ctrlKey && e.key.toUpperCase() === 'O') {
-		openLoadDialog();
+		openFileDialogV2();
 		e.stopPropagation();
 		e.preventDefault();
 	}

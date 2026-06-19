@@ -6,6 +6,7 @@ html, body {
 	overflow:hidden;
 	background:#1e1e1e;
 	font-family:Arial;
+	color:white;
 }
 
 #toolbar {
@@ -14,7 +15,7 @@ html, body {
 	display:flex;
 	align-items:center;
 	gap:10px;
-	padding:5px 10px;
+	padding:1px 5px;
 }
 
 button {
@@ -66,4 +67,24 @@ button:hover {
 .dropdown-item {
 	border-top: 1px solid rgb(40, 40, 40);
 	text-align: left;
+}
+
+.button-side-dropdown {
+	width: 20px;
+	padding-left: 0;
+	padding-right: 0;
+	border-radius: 0 2px 2px 0;
+}
+#save-as {
+	position: absolute;
+	left: -63px;
+}
+
+.tab-name {
+	margin: 6px 15px;
+	font-size: 15px;
+	background: #353535;
+	border-radius: 7px 7px 0px 0px;
+	color: #d6c08d;
+	padding: 2px 12px;
 }
