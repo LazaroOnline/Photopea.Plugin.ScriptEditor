@@ -8,7 +8,7 @@ with autocomplete/intellisense for Photoshop ExtendScripts.
 
 
 
-The `d.ts` type files comes from the vscode extension ['Types-for-Adobe'](https://github.com/docsforadobe/Types-for-Adobe) repository on GitHub.
+The `d.ts` type files comes from the ['Types-for-Adobe'](https://github.com/docsforadobe/Types-for-Adobe) repository on GitHub.
 
 There is also a ['types-for-adobe extension'](https://marketplace.visualstudio.com/items?itemName=il-harper.vscode-types-for-adobe) available for vscode.
 
