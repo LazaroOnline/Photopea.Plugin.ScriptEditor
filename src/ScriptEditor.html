@@ -11,10 +11,19 @@
 <body>
 
 <div id="toolbar">
-	<button id="run">Run</button>
-	<button id="save">Save</button>
+	<button id="run" title="Ctrl+Enter">Run</button>
+	<button id="save" title="Ctrl+S">Save</button>
 	<button id="load">Load</button>
 	<input id="fileInput" type="file" accept=".txt,.js,.jsx,.jsxbin" hidden>
+
+	<div class="dropdown">
+		<button class="dropbtn">Demos ▾</button>
+		<div class="dropdown-content">
+			<button class="dropdown-item" id="demo-hello">Hello</button>
+			<button class="dropdown-item" id="demo-process-layers">Process Layers</button>
+			<button class="dropdown-item" id="demo-clone-layers">Clone Layers</button>
+		</div>
+	</div>
 </div>
 
 <div id="editor"></div>

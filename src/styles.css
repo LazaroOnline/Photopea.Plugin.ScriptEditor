@@ -21,8 +21,9 @@ button {
 	background:#0e639c;
 	color:white;
 	border:0;
-	padding:8px 18px;
+	padding:6px 16px;
 	cursor:pointer;
+	border-radius: 2px;
 }
 
 button:hover {
@@ -47,4 +48,22 @@ button:hover {
 #dropZone.drag {
 	border-color:#00aaff;
 	background:rgba(0,150,255,.1);
+}
+
+.dropdown {
+	position: relative;
+	z-index: 333;
+}
+.dropdown-content {
+	display: none;
+	position: absolute;
+	min-width: 130px;
+}
+.dropdown:hover .dropdown-content {
+	display: flex;
+	flex-direction: column;
+}
+.dropdown-item {
+	border-top: 1px solid rgb(40, 40, 40);
+	text-align: left;
 }

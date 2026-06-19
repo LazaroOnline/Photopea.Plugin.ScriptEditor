@@ -13,6 +13,7 @@ var tsconfigFiles = [
 	 "types/Photoshop/2015.5/tsconfig.json"
 	,"types/shared/tsconfig.json"
 ];
+var scriptAutoSaveLocalStorageKey = "script_auto_save";
 
 require.config({
 	paths: {
@@ -32,17 +33,13 @@ require(["vs/editor/editor.main"], async function() {
 
 	monaco.editor.setTheme("my-vscode-dark");
 
+	var savedCode = localStorage.getItem(scriptAutoSaveLocalStorageKey);
+	var editorValue = savedCode || demos.default;
+
 	editor = monaco.editor.create(
 		document.getElementById("editor"),
 		{
-			value:
-`// Template:
-// THIS PLUGIN EDITOR IS IN BETA
-// WARNING: it loses your pending changes when you hide this view
-// use at your own risk
-
-alert("Hello Photopea scripters!");
-`,
+			value: editorValue,
 			language: "javascript",
 			automaticLayout: true,
 			minimap: { enabled:true},
@@ -56,6 +53,13 @@ alert("Hello Photopea scripters!");
 	editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, runCode);
 	editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, saveFile);
 
+	const model = editor.getModel();
+	model.onDidChangeContent(() => {
+		var currentScriptCode = model.getValue();
+		console.log("auto-saved");
+		localStorage.setItem(scriptAutoSaveLocalStorageKey, currentScriptCode);
+	});
+
 	await loadTypeDefinitions();
 });
 
@@ -68,7 +72,7 @@ async function loadTypeDefinitions() {
 			var response = await fetch(file);
 			var text = await response.text();
 			tsDefaults.addExtraLib(text, "file:///" + file);
-			console.log("Loaded definition:", file);
+			// console.log("Loaded definition:", file);
 		}
 		catch(e) {
 			console.warn("Could not load file", file);
@@ -116,27 +120,66 @@ function saveFile() {
 var fileInput = document.getElementById("fileInput");
 function loadFile() {
 	fileInput.click();
-};
+}
 
-fileInput.onchange=function(e) {
+fileInput.onchange = (e) => {
 	var file = e.target.files[0];
 	loadFile(file);
+}
+
+document.getElementById("run").onclick = runCode;
+document.getElementById("save").onclick = saveFile;
+document.getElementById("load").onclick = loadFile;
+
+var demos = {
+	default: `
+// THIS PLUGIN EDITOR IS IN BETA
+// WARNING: the save feature is unstable yet, make copies of your scripts.
+// use at your own risk
+
+alert("Hello Photopea scripters!");
+`,
+	hello: `
+alert("Hello Photopea!");
+`,
+	processLayers: `
+var lays = app.activeDocument.layers;
+
+for(var i=0; i<lays.length; i++)
+{
+	//lays[i].visible = false;
+	//lays[i].opacity = 50;
+	lays[i].name = "My Layer "+i;
+}
+`,
+	processCloneLayers: `
+var orig = app.activeDocument.activeLayer;
+var cnt = 12;
+var angle = Math.floor(360 / cnt);
+
+for(var i=1; i<cnt; i++)
+{
+	var nlay = orig.duplicate();
+	//nlay.translate(30*i, 20*i);
+	nlay.rotate(angle * i, AnchorPosition.BOTTOMCENTER);
+}
+`,
 };
 
-document.getElementById("run").onclick = runCode
-document.getElementById("save").onclick = saveFile;
-document.getElementById("load").onclick = loadFile
+document.getElementById("demo-hello").onclick = () => editor.setValue(demos.hello);
+document.getElementById("demo-process-layers").onclick = () => editor.setValue(demos.processLayers);
+document.getElementById("demo-clone-layers").onclick = () => editor.setValue(demos.processCloneLayers);
 
 
 // Drag & Drop
 var dropZone = document.getElementById("dropZone");
 
-document.addEventListener("dragover", function(e) {
+document.addEventListener("dragover", (e) => {
 	e.preventDefault();
 	dropZone.classList.add("drag");
 });
 
-document.addEventListener("dragleave", function() {
+document.addEventListener("dragleave", () => {
 	dropZone.classList.remove("drag");
 });
 
@@ -147,7 +190,7 @@ var fileExtensionsAllowed = [
 	".jsxbin"
 ];
 
-document.addEventListener("drop", function(e) {
+document.addEventListener("drop", (e) => {
 	e.preventDefault();
 	dropZone.classList.remove("drag");
 	var file = e.dataTransfer.files[0];
@@ -162,10 +205,8 @@ document.addEventListener("drop", function(e) {
 
 function loadFile(file) {
 	var reader = new FileReader();
-	reader.onload=function() {
-		editor.setValue(
-			reader.result
-		);
+	reader.onload = () => {
+		editor.setValue(reader.result);
 	};
 	reader.readAsText(file);
 }
