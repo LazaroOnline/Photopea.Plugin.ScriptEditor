@@ -1,11 +1,5 @@
 {
-	"environment": {
-		"plugins" : [
-			{
-				"name": "Script Editor",
-				"url" : "https://lazaroonline.github.io/Photopea.Plugin.ScriptEditor/src/ScriptEditor.html",
-				"icon": "https://lazaroonline.github.io/Photopea.Plugin.ScriptEditor/imgs/icon/icon.svg"
-			}
-		]
-	}
+	"name": "Script Editor",
+	"url" : "https://lazaroonline.github.io/Photopea.Plugin.ScriptEditor/src/ScriptEditor.html",
+	"icon": "https://lazaroonline.github.io/Photopea.Plugin.ScriptEditor/imgs/icon/icon.svg"
 }
