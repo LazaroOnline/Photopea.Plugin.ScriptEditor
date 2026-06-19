@@ -35,23 +35,20 @@ require(["vs/editor/editor.main"], async function() {
 
 	var savedCode = localStorage.getItem(scriptAutoSaveLocalStorageKey);
 	var editorValue = savedCode || demos.default;
-
-	editor = monaco.editor.create(
-		document.getElementById("editor"),
-		{
-			value: editorValue,
-			language: "javascript",
-			automaticLayout: true,
-			minimap: { enabled:true},
-			fontSize: 14,
-			suggestOnTriggerCharacters: true,
-			quickSuggestions: true
-		}
-	);
-
-		
+	var monacoElement = document.getElementById("editor");
+	var editorOptions = {
+		value: editorValue,
+		language: "javascript",
+		automaticLayout: true,
+		minimap: { enabled: false},
+		fontSize: 14,
+		suggestOnTriggerCharacters: true,
+		quickSuggestions: true
+	};
+	editor = monaco.editor.create(monacoElement, editorOptions);
 	editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, runCode);
 	editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, saveFile);
+	editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyO, openLoadDialog);
 
 	const model = editor.getModel();
 	model.onDidChangeContent(() => {
@@ -118,7 +115,7 @@ function saveFile() {
 
 
 var fileInput = document.getElementById("fileInput");
-function loadFile() {
+function openLoadDialog() {
 	fileInput.click();
 }
 
@@ -129,7 +126,7 @@ fileInput.onchange = (e) => {
 
 document.getElementById("run").onclick = runCode;
 document.getElementById("save").onclick = saveFile;
-document.getElementById("load").onclick = loadFile;
+document.getElementById("load").onclick = openLoadDialog;
 
 var demos = {
 	default: `
@@ -211,3 +208,20 @@ function loadFile(file) {
 	reader.readAsText(file);
 }
 
+
+// Required when the focus is outside the Monaco editor, like the top buttons.
+document.addEventListener("keydown", (e) => {
+	if (e.ctrlKey && e.key === 'Enter') {
+		runCode();
+	}
+	if (e.ctrlKey && e.key.toUpperCase() === 'S') {
+		saveFile();
+		e.stopPropagation();
+		e.preventDefault();
+	}
+	if (e.ctrlKey && e.key.toUpperCase() === 'O') {
+		openLoadDialog();
+		e.stopPropagation();
+		e.preventDefault();
+	}
+});
