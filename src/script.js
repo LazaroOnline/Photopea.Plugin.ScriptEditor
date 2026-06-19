@@ -51,6 +51,11 @@ alert("Hello Photopea scripters!");
 			quickSuggestions: true
 		}
 	);
+
+		
+	editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, runCode);
+	editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, saveFile);
+
 	await loadTypeDefinitions();
 });
 
@@ -97,6 +102,7 @@ function runCode() {
 
 
 function saveFile() {
+	console.log("Saving script file...");
 	var blob = new Blob([editor.getValue()], { type:"text/javascript" });
 	var url = URL.createObjectURL(blob);
 	var a = document.createElement("a");
@@ -164,15 +170,3 @@ function loadFile(file) {
 	reader.readAsText(file);
 }
 
-
-document.addEventListener("keydown", (e) => {
-	if (e.ctrlKey && e.key === 'Enter') {
-		runCode();
-	}
-	if (e.ctrlKey && e.key.toUpperCase() === 'S') {
-		console.log("Saving file...");
-		saveFile();
-		e.stopPropagation();
-		e.preventDefault();
-	}
-});
