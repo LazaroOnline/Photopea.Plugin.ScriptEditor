@@ -325,6 +325,25 @@ function setEditorContent(newText) {
 	editor.pushUndoStop();
 }
 
+// In browsers that doesn't support the File-API, 
+// it doesn't make sense to have a "save-as" button.
+initializeSaveAsVisibility()
+function initializeSaveAsVisibility() {
+	if (!supportsFileAPI()) {
+		var btnSave = document.getElementById("btn-save");
+		btnSave.classList.remove("btn-dropdown-main");
+		var btnSaveAs = document.getElementById("btn-save-as");
+		var saveDropdown = btnSaveAs.closest(".dropdown");
+		btnSaveAs.hidden = true;
+		saveDropdown.hidden = true;
+		saveDropdown.style.display = "none";
+	}
+}
+
+function supportsFileAPI() {
+	return window.showOpenFilePicker != null
+}
+
 // Required when the focus is outside the Monaco editor, like the top buttons.
 document.addEventListener("keydown", (e) => {
 	if (e.ctrlKey && e.key === 'Enter') {

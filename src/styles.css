@@ -1,12 +1,14 @@
-
+:root {
+  --font-ui: Arial, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
 html, body {
 	margin:0;
 	padding:0;
 	height:100%;
 	overflow:hidden;
 	background:#1e1e1e;
-	font-family:Arial;
 	color:white;
+	font-family: var(--font-ui);
 }
 
 #toolbar {
@@ -21,10 +23,11 @@ html, body {
 button {
 	background:#0e639c;
 	color:white;
+	font-family: var(--font-ui);
 	border:0;
-	padding:6px 16px;
+	padding:7px 10px;
 	cursor:pointer;
-	border-radius: 2px;
+	border-radius: 5px;
 }
 button:hover {
 	background:#1177bb;
@@ -71,25 +74,29 @@ button:disabled {
 .dropdown-item {
 	border-top: 1px solid rgb(40, 40, 40);
 	text-align: left;
+	border-radius: 2px;
 }
+
 .btn-dropdown-main {
-	border-radius: 2px 0 0 2px;
+	border-radius: 5px 0 0 5px;
+	padding: 0px 5px 0px 10px;
 }
 .btn-dropdown-side {
 	width: 20px;
 	padding-left: 0;
 	padding-right: 0;
-	border-radius: 0 2px 2px 0;
+	border-radius: 0 5px 5px 0;
 }
 .play-icon {
 	font-size: 10px;
 }
 #btn-save-as {
 	position: absolute;
-	left: -63px;
-	width: 100px;
-	width: 84px;
+	left: -50px;
+	width: 70px;
+	border-radius: 3px;
 	padding-right: 1px;
+	padding-left: 7px;
 }
 
 .tab-name {
