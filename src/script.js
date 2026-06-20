@@ -1,11 +1,12 @@
 
 var editor;
 var definitionFiles = [
-	 "types/shared/global.d.ts"
-	,"types/shared/JavaScript.d.ts"
-	,"types/shared/PlugPlugExternalObject.d.ts"
+	// "types/photoshop-bundle.d.ts"
+	 "types/shared/JavaScript.d.ts"
 	,"types/shared/ScriptUI.d.ts"
+	,"types/shared/PlugPlugExternalObject.d.ts"
 	,"types/shared/XMPScript.d.ts"
+	,"types/shared/global.d.ts"
 	,"types/Photoshop/2015.5/index.d.ts"
 ];
 
@@ -80,13 +81,16 @@ require(["vs/editor/editor.main"], async function() {
 	var editorValue = savedCode || demos.default;
 	var monacoElement = document.getElementById("editor");
 	var editorOptions = {
-		value: editorValue,
-		language: "javascript",
-		automaticLayout: true,
-		minimap: { enabled: false},
-		fontSize: 14,
-		suggestOnTriggerCharacters: true,
-		quickSuggestions: true
+		 value: editorValue
+		,language: "javascript"
+		,automaticLayout: true
+		,minimap: { enabled: false}
+		,fontSize: 14
+		,suggestOnTriggerCharacters: true
+		,quickSuggestions: true
+		,glyphMargin: false		 // Hide breakpoints margin
+		,lineDecorationsWidth: 0 // Reduce decoration space
+		,lineNumbersMinChars: 3
 	};
 	editor = monaco.editor.create(monacoElement, editorOptions);
 	editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, runCode);
@@ -100,17 +104,29 @@ require(["vs/editor/editor.main"], async function() {
 	var model = editor.getModel();
 	model.onDidChangeContent(() => autoSaveInLocalStorageWithDebounce(model));
 	editor.onDidChangeModelContent(() => setIsDirty(true));
-	//await loadTypeDefinitions(); // TODO: make this work and not throw errors.
+	monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
+		target: monaco.languages.typescript.ScriptTarget.ES3,
+		allowNonTsExtensions: true,
+		noLib: true
+	});
+	await loadTypeDefinitions();
+	// await loadTsConfigFiles();
 });
 
 // Load .d.ts for Intellisense
+
+async function loadTypeDefinitions_FromBundle() {
+	var psTypeDefinitionsUrl = "types/photoshop-bundle.d.ts";
+	var psTypeDefinitions = await fetchText(psTypeDefinitionsUrl);
+	var virtualFilePath = 'file:///photoshop-extendscript.d.ts';
+	monaco.languages.typescript.javascriptDefaults.addExtraLib(psTypeDefinitions, virtualFilePath);
+}
+
 async function loadTypeDefinitions() {
-	// var tsDefaults = monaco.languages.typescript.javascriptDefaults;
-	var tsDefaults = monaco.languages.typescript.typescriptDefaults;
+	var tsDefaults = monaco.languages.typescript.javascriptDefaults;
 	for (var file of definitionFiles) {
 		try {
-			var response = await fetch(file);
-			var text = await response.text();
+			var text = await fetchText(file);
 			tsDefaults.addExtraLib(text, "file:///" + file);
 			// console.log("Loaded definition:", file);
 		}
@@ -118,12 +134,13 @@ async function loadTypeDefinitions() {
 			console.warn("Could not load file", file);
 		}
 	}
+}
 
+async function loadTsConfigFiles() {
+	var tsDefaults = monaco.languages.typescript.javascriptDefaults;
 	for (var file of tsconfigFiles) {
 		try {
-			var response = await fetch(file);
-			var json = await response.text();
-
+			var json = await fetchText(file);
 			tsDefaults.setCompilerOptions(JSON.parse(json));
 			console.log("Loaded config:", file);
 		}
@@ -136,6 +153,10 @@ async function loadTypeDefinitions() {
 		noSemanticValidation:false,
 		noSyntaxValidation:false
 	});
+}
+
+function fetchText(url) {
+	return fetch(url).then(r => r.text());
 }
 
 function runCode() {
