@@ -190,7 +190,7 @@ function setCurrentFileHandle(fileHandle) {
 }
 function setIsDirty(newValue) {
 	isDirty = newValue;
-	var saveButton = document.getElementById("save");
+	var saveButton = document.getElementById("btn-save");
 	saveButton.disabled = !isDirty;
 }
 
@@ -270,14 +270,14 @@ fileInput.onchange = (e) => {
 	loadFile(file);
 }
 
-document.getElementById("run").onclick = runCode;
-document.getElementById("save").onclick = saveFileTry;
-document.getElementById("save-as").onclick = saveFileAs;
-document.getElementById("load").onclick = openFileDialogTry;
+document.getElementById("btn-run").onclick = runCode;
+document.getElementById("btn-save").onclick = saveFileTry;
+document.getElementById("btn-save-as").onclick = saveFileAs;
+document.getElementById("btn-load").onclick = openFileDialogTry;
 
-document.getElementById("demo-hello").onclick = () => setEditorContent(demos.hello);
-document.getElementById("demo-process-layers").onclick = () => setEditorContent(demos.processLayers);
-document.getElementById("demo-clone-layers").onclick = () => setEditorContent(demos.processCloneLayers);
+document.getElementById("btn-demo-hello").onclick = () => setEditorContent(demos.hello);
+document.getElementById("btn-demo-process-layers").onclick = () => setEditorContent(demos.processLayers);
+document.getElementById("btn-demo-clone-layers").onclick = () => setEditorContent(demos.processCloneLayers);
 
 
 // Drag & Drop

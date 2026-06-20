@@ -72,14 +72,19 @@ button:disabled {
 	border-top: 1px solid rgb(40, 40, 40);
 	text-align: left;
 }
-
-.button-side-dropdown {
+.btn-dropdown-main {
+	border-radius: 2px 0 0 2px;
+}
+.btn-dropdown-side {
 	width: 20px;
 	padding-left: 0;
 	padding-right: 0;
 	border-radius: 0 2px 2px 0;
 }
-#save-as {
+.play-icon {
+	font-size: 10px;
+}
+#btn-save-as {
 	position: absolute;
 	left: -63px;
 	width: 100px;

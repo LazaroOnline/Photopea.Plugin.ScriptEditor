@@ -11,25 +11,25 @@
 <body>
 
 <div id="toolbar">
-	<button id="run" title="Ctrl+Enter">Run</button>
+	<button id="btn-run" title="Ctrl+Enter"><span class="play-icon">▶</span> Run</button>
 	<div style="display: flex;">
-		<button id="save" title="Ctrl+S">Save</button>
+		<button id="btn-save" class="btn-dropdown-main" title="Ctrl+S">Save</button>
 		<div class="dropdown">
-			<button class="button-side-dropdown">▾</button>
+			<button class="btn-dropdown-side">▾</button>
 			<div class="dropdown-content">
-				<button id="save-as" class="dropdown-item" title="Ctrl+Shift+S">Save As...</button>
+				<button id="btn-save-as" class="dropdown-item" title="Ctrl+Shift+S">Save As...</button>
 			</div>
 		</div>
 	</div>
-	<button id="load" title="Ctrl+O">Load</button>
+	<button id="btn-load" title="Ctrl+O">Load</button>
 	<input id="fileInput" type="file" accept=".txt,.js,.jsx,.jsxbin" hidden>
 
 	<div class="dropdown">
 		<button class="dropbtn">Demos ▾</button>
 		<div class="dropdown-content">
-			<button class="dropdown-item" id="demo-hello">Hello</button>
-			<button class="dropdown-item" id="demo-process-layers">Process Layers</button>
-			<button class="dropdown-item" id="demo-clone-layers">Clone Layers</button>
+			<button class="dropdown-item" id="btn-demo-hello">Hello</button>
+			<button class="dropdown-item" id="btn-demo-process-layers">Process Layers</button>
+			<button class="dropdown-item" id="btn-demo-clone-layers">Clone Layers</button>
 		</div>
 	</div>
 </div>
@@ -40,7 +40,7 @@
 <div id="editor"></div>
 <div id="dropZone"></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.0/min/vs/loader.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.53.0/min/vs/loader.min.js"></script>
 <script src="script.js"></script>
 
 </body>
