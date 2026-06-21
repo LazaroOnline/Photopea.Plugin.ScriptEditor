@@ -197,7 +197,11 @@ function setIsDirty(newValue) {
 async function openFileDialogTry() {
 	try {
 		await openFileDialogV2();
-	} catch {
+	} catch (ex) {
+		if (ex.name == "AbortError") {
+			return;
+		}
+		// console.log(ex);
 		await openFileDialogV1();
 	}
 }
@@ -232,7 +236,11 @@ async function saveFileAs() {
 async function saveFileTry() {
 	try {
 		await saveFileV2();
-	} catch {
+	} catch (ex) {
+		if (ex.name == "AbortError") {
+			return;
+		}
+		// console.log(ex);
 		saveFileV1();
 	}
 }
