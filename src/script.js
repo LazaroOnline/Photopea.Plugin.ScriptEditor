@@ -347,9 +347,9 @@ function initializeSaveAsVisibility() {
 		saveDropdown.style.display = "none";
 	}
 }
-
 function supportsFileAPI() {
-	return window.showOpenFilePicker != null
+	return false; // For now Photopea doesn't allow the File API for plugins.
+	return window.isSecureContext && typeof window.showOpenFilePicker === "function";
 }
 
 // Required when the focus is outside the Monaco editor, like the top buttons.
