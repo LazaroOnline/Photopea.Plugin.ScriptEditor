@@ -353,9 +353,26 @@ function initializeDropdowns() {
 			closeAllDropdowns();
 			if (!wasOpen) {
 				menu.classList.add('open');
+
+				// Auto position to avoid screen borders:
+				setStyleLeftSide(menu, false);
+				var isOutOfScreenOnTheLeft = menu.getBoundingClientRect().left < 0;
+				if (isOutOfScreenOnTheLeft) {
+					setStyleLeftSide(menu, true);
+					var rect = menu.getBoundingClientRect();
+					var isOutOfScreenOnTheRight = rect.right > window.innerWidth;
+					if (isOutOfScreenOnTheRight) {
+						setStyleLeftSide(menu, false);
+					}
+				}
 			}
 		});
 	}
+}
+
+function setStyleLeftSide(element, left = true) {
+	element.style.left = left? "0" : "auto";
+	element.style.right = left? "auto" : "0";
 }
 
 function closeAllDropdowns() {
