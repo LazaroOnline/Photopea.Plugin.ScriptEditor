@@ -287,8 +287,30 @@ document.getElementById("btn-demo-hello").onclick = () => setEditorContent(demos
 document.getElementById("btn-demo-process-layers").onclick = () => setEditorContent(demos.processLayers);
 document.getElementById("btn-demo-clone-layers").onclick = () => setEditorContent(demos.processCloneLayers);
 
+function loadFile(file) {
+	var reader = new FileReader();
+	reader.onload = () => {
+		setEditorContent(reader.result);
+		// editor.setValue(reader.result);
+	};
+	reader.readAsText(file);
+}
+
+// Unlike "editor.setValue()" this preserves document history:
+function setEditorContent(newText) {
+	var model = editor.getModel();
+	editor.pushUndoStop();
+	editor.executeEdits('replace-doc', [{
+		range: editor.getModel().getFullModelRange(),
+		text: newText
+	}]);
+	editor.pushUndoStop();
+}
+
+// _____________________________________________________________
 
 // Drag & Drop
+
 var dropZone = document.getElementById("dropZone");
 
 document.addEventListener("dragover", (e) => {
@@ -313,25 +335,38 @@ document.addEventListener("drop", (e) => {
 	}
 });
 
-function loadFile(file) {
-	var reader = new FileReader();
-	reader.onload = () => {
-		setEditorContent(reader.result);
-		// editor.setValue(reader.result);
-	};
-	reader.readAsText(file);
+// _____________________________________________________________
+
+// DropDown menus
+
+initializeDropdowns();
+document.addEventListener('click', closeAllDropdowns);
+
+function initializeDropdowns() {
+	var dropdownTriggers = document.querySelectorAll(".dropdown-trigger");
+	for (var dropdownTrigger of dropdownTriggers) {
+		dropdownTrigger.addEventListener('click', function (e) {
+			e.stopPropagation();
+			var dropdownContainer = e.target.closest(".dropdown");
+			var menu = dropdownContainer.querySelector(".dropdown-menu");
+			var wasOpen = menu.classList.contains('open');
+			closeAllDropdowns();
+			if (!wasOpen) {
+				menu.classList.add('open');
+			}
+		});
+	}
 }
 
-// Unlike "editor.setValue()" this preserves document history:
-function setEditorContent(newText) {
-	var model = editor.getModel();
-	editor.pushUndoStop();
-	editor.executeEdits('replace-doc', [{
-		range: editor.getModel().getFullModelRange(),
-		text: newText
-	}]);
-	editor.pushUndoStop();
+function closeAllDropdowns() {
+	var openMenus = document.querySelectorAll('.dropdown-menu.open');
+	for (var openMenu of openMenus) {
+		openMenu.classList.remove('open');
+	}
 }
+
+// _____________________________________________________________
+
 
 // In browsers that doesn't support the File-API, 
 // it doesn't make sense to have a "save-as" button.
@@ -339,11 +374,9 @@ initializeSaveAsVisibility()
 function initializeSaveAsVisibility() {
 	if (!supportsFileAPI()) {
 		var btnSave = document.getElementById("btn-save");
-		btnSave.classList.remove("btn-dropdown-main");
+		btnSave.classList.remove("split-main");
 		var btnSaveAs = document.getElementById("btn-save-as");
 		var saveDropdown = btnSaveAs.closest(".dropdown");
-		btnSaveAs.hidden = true;
-		saveDropdown.hidden = true;
 		saveDropdown.style.display = "none";
 	}
 }

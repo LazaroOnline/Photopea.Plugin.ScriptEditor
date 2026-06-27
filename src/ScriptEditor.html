@@ -10,29 +10,52 @@
 
 <body>
 
-<div id="toolbar">
-	<button id="btn-run" title="Ctrl+Enter"><span class="play-icon">▶</span> Run</button>
-	<div style="display: flex;">
-		<button id="btn-save" class="btn-dropdown-main" title="Ctrl+S">Save</button>
+<header class="toolbar">
+	<button id="btn-run" class="primary" title="Ctrl+Enter"><span class="play-icon">▶</span> Run</button>
+	
+	<div class="split-button">
+		<button class="split-main" id="btn-save" title="Ctrl+S">Save</button>
 		<div class="dropdown">
-			<button class="btn-dropdown-side">▾</button>
-			<div class="dropdown-content">
-				<button id="btn-save-as" class="dropdown-item" title="Ctrl+Shift+S">Save As...</button>
+			<button class="split-chevron dropdown-trigger" aria-label="More save options">▾</button>
+			<div class="dropdown-menu dropdown-menu-right">
+				<button class="dropdown-item" id="btn-save-as" title="Ctrl+Shift+S">Save As…</button>
 			</div>
 		</div>
 	</div>
+
 	<button id="btn-load" title="Ctrl+O">Load</button>
 	<input id="fileInput" type="file" accept=".txt,.js,.jsx,.jsxbin" hidden>
 
 	<div class="dropdown">
-		<button class="dropbtn">Demos ▾</button>
-		<div class="dropdown-content">
+		<button class="dropdown-trigger">
+			Demos <spam class="chevron">▾</spam>
+		</button>
+		<div class="dropdown-menu">
 			<button class="dropdown-item" id="btn-demo-hello">Hello</button>
 			<button class="dropdown-item" id="btn-demo-process-layers">Process Layers</button>
 			<button class="dropdown-item" id="btn-demo-clone-layers">Clone Layers</button>
 		</div>
 	</div>
-</div>
+
+	<div class="dropdown">
+		<button class="dropdown-trigger">☰</button>
+		<div class="dropdown-menu">
+			<a target="blank" draggable="false" href="https://github.com/LazaroOnline/Photopea.Plugin.ScriptEditor">
+				<button class="dropdown-item">
+					<span>Github</span>
+					<svg class="github-icon" height="17" width="17" viewBox="0 0 16 16" style="fill:rgb(200, 200, 200)">
+						<path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+					</svg>
+				</button>
+			</a>
+			<a target="blank" draggable="false" href="https://github.com/LazaroOnline/Photopea.Plugin.ScriptEditor/issues">
+				<button class="dropdown-item">Report an issue</button>
+			</a>
+		</div>
+	</div>
+
+</header>
+
 <div>
 	<div id="filename" class="tab-name"></div>
 </div>
