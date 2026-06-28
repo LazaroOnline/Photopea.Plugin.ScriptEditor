@@ -31,6 +31,43 @@ html, body {
 	position: relative;
 	z-index: 30;
 }
+
+.icon {
+	font-family: "Segoe UI Symbol", "Noto Sans Symbols 2", "Noto Sans Symbols", "Symbola";
+	color: white;
+	background-color: currentColor;
+	padding: 0px;
+	font-size: 18px;
+	width: 16px;
+	height: 16px;
+	display: inline-block;
+}
+.icon-save {
+	background-color: currentColor;
+	mask: url(../imgs/icons/Save.svg) center/contain no-repeat;
+	-webkit-mask: url(../imgs/icons/Save.svg) center/contain no-repeat;
+}
+.icon-load {
+	background-color: currentColor;
+	mask: url(../imgs/icons/Load.svg) center/contain no-repeat;
+	-webkit-mask: url(../imgs/icons/Load.svg) center/contain no-repeat;
+}
+@media (min-width: 299px) {
+	.xs { display: none; }
+}
+@media (max-width: 298px) {
+	.md { display: none; }
+	.toolbar { gap: 5px; }
+	button .play-icon {
+		padding-right: 0;
+		font-size: 12px;
+	}
+	button {
+		padding: 2px 4px !important;
+		height: 30px;
+		min-width: 30px;
+	}
+}
 button {
 	font-family: var(--font-ui);
 	font-size: 12.5px;
@@ -78,6 +115,7 @@ a {
 }
 .play-icon {
 	font-size: 10px;
+	padding-right: 2px;
 }
 .github-icon {
 	padding-left: 32px;

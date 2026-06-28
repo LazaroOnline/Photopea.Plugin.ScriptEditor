@@ -11,19 +11,28 @@
 <body>
 
 <header class="toolbar">
-	<button id="btn-run" class="primary" title="Ctrl+Enter"><span class="play-icon">▶</span> Run</button>
+	<button id="btn-run" class="primary" title="Run (Ctrl+Enter)">
+		<span class="play-icon">▶</span>
+		<span class="text md">Run</span>
+</button>
 	
 	<div class="split-button">
-		<button class="split-main" id="btn-save" title="Ctrl+S">Save</button>
+		<button class="split-main" id="btn-save" title="Save (Ctrl+S)" aria-label="Save">
+			<div class="icon xs icon-save"><!--💾--></div>
+			<span class="text md">Save</span>
+</button>
 		<div class="dropdown">
 			<button class="split-chevron dropdown-trigger" aria-label="More save options">▾</button>
 			<div class="dropdown-menu dropdown-menu-right">
-				<button class="dropdown-item" id="btn-save-as" title="Ctrl+Shift+S">Save As…</button>
+				<button class="dropdown-item" id="btn-save-as" title="Save as (Ctrl+Shift+S)">Save As…</button>
 			</div>
 		</div>
 	</div>
 
-	<button id="btn-load" title="Ctrl+O">Load</button>
+	<button id="btn-load" title="Load (Ctrl+O)" aria-label="Load">
+		<div class="icon xs icon-load"><!--📥--></div>
+		<span class="text md">Load</span>
+</button>
 	<input id="fileInput" type="file" accept=".txt,.js,.jsx,.jsxbin" hidden>
 
 	<div class="dropdown">
@@ -67,7 +76,7 @@
 <div id="editor"></div>
 <div id="dropZone"></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.53.0/min/vs/loader.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.0/min/vs/loader.min.js"></script>
 <script src="script.js"></script>
 
 </body>
