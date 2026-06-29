@@ -773,13 +773,14 @@ document.addEventListener("dragleave", () => {
 document.addEventListener("drop", (e) => {
 	e.preventDefault();
 	dropZone.classList.remove("drag");
-	var file = e.dataTransfer.files[0];
-	if (!file) {
-		return;
-	}
-	var isAllowedExtension = fileExtensionsAllowed.some(ext => file.name.toLowerCase().endsWith(ext));
-	if (isAllowedExtension) {
-		loadFile(file);
+	for (var file of e.dataTransfer.files) {
+		if (!file) {
+			return;
+		}
+		var isAllowedExtension = fileExtensionsAllowed.some(ext => file.name.toLowerCase().endsWith(ext));
+		if (isAllowedExtension) {
+			loadFile(file);
+		}
 	}
 });
 
