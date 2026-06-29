@@ -27,41 +27,11 @@ var fileExtensionsAllowed = [
 ];
 
 var demos = {
-	default: `
-// THIS PLUGIN EDITOR IS IN BETA
-// WARNING: the save feature is unstable yet, make copies of your scripts.
-// use at your own risk
-
-alert("Hello Photopea scripters!");
-`,
-	hello: `
-alert("Hello Photopea!");
-`,
-	processLayers: `
-var topLayers = app.activeDocument.layers;
-
-for (var i=0; i < topLayers.length; i++)
-{
-	var layer = topLayers[i];
-	// layer.visible = false;
-	// layer.opacity = 50;
-	layer.name = "My Layer " + i;
-}
-`,
-	processCloneLayers: `
-var orig = app.activeDocument.activeLayer;
-var cnt = 12;
-var angle = Math.floor(360 / cnt);
-
-for(var i=1; i<cnt; i++)
-{
-	var nlay = orig.duplicate();
-	//nlay.translate(30*i, 20*i);
-	nlay.rotate(angle * i, AnchorPosition.BOTTOMCENTER);
-}
-`,
+	 script: {}
+	,hello: {}
+	,processLayers: {}
+	,processCloneLayers: {}
 };
-
 
 document.getElementById("btn-run").onclick = runCode;
 document.getElementById("btn-save").onclick = saveFileTry;
@@ -114,7 +84,8 @@ async function createEditor() {
 		}
 	}
 	if (startFile == null) {
-		startFile = createFile("script.jsx", demos.default, { dirty: false });
+		var defaultContent = await getDemo("script");
+		startFile = createFile("script.jsx", defaultContent, { dirty: false });
 	}
 	setActiveTab(startFile.id);
 
@@ -433,8 +404,20 @@ function loadFile(file) {
 	reader.readAsText(file);
 }
 
-function createFileFromDemo(demoName) {
-	var editorTabFile = createFileAndFocus(demoName + ".jsx", demos[demoName], { dirty: false });
+async function createFileFromDemo(demoName) {
+	var demoContent = await getDemo(demoName);
+	var editorTabFile = createFileAndFocus(demoName + ".jsx", demoContent, { dirty: false });
+}
+
+async function getDemo(demoName) {
+	var demo = demos[demoName];
+	if (demo == null) {
+		return;
+	}
+	if (demo.content == null) {
+		demo.content = await fetchText(`demos/${demoName}.jsx`);
+	}
+	return demo.content;
 }
 
 // Unlike "editor.setValue()" this preserves document history:
