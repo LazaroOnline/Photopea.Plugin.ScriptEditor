@@ -53,6 +53,17 @@ require.config({
 	}
 });
 
+// The page's own origin and the CDN are different origins, 
+// and browsers don't allow creating workers across origins directly. 
+// This proxies worker creation through a same-origin data: URL.
+window.MonacoEnvironment = {
+ 	getWorkerUrl: function () {
+ 		var proxy = "self.MonacoEnvironment = { baseUrl: '" + MONACO_BASE + "' };\n" +
+ 					"importScripts('" + MONACO_BASE + "vs/base/worker/workerMain.js');";
+ 		return 'data:text/javascript;charset=utf-8,' + encodeURIComponent(proxy);
+ 	}
+};
+
 require(["vs/editor/editor.main"], createEditor);
 
 async function createEditor() {
