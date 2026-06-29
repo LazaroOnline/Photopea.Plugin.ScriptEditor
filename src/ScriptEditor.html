@@ -14,13 +14,13 @@
 	<button id="btn-run" class="primary" title="Run (Ctrl+Enter)">
 		<span class="play-icon">▶</span>
 		<span class="text md">Run</span>
-</button>
+	</button>
 	
 	<div class="split-button">
 		<button class="split-main" id="btn-save" title="Save (Ctrl+S)" aria-label="Save">
 			<div class="icon xs icon-save"><!--💾--></div>
 			<span class="text md">Save</span>
-</button>
+		</button>
 		<div class="dropdown">
 			<button class="split-chevron dropdown-trigger" aria-label="More save options">▾</button>
 			<div class="dropdown-menu dropdown-menu-right">
@@ -32,8 +32,8 @@
 	<button id="btn-load" title="Load (Ctrl+O)" aria-label="Load">
 		<div class="icon xs icon-load"><!--📥--></div>
 		<span class="text md">Load</span>
-</button>
-	<input id="fileInput" type="file" accept=".txt,.js,.jsx,.jsxbin" hidden>
+	</button>
+	<input id="fileInput" type="file" multiple accept=".txt,.js,.jsx,.jsxbin" hidden>
 
 	<div class="dropdown">
 		<button class="dropdown-trigger">
@@ -69,9 +69,18 @@
 
 </header>
 
-<div>
-	<div id="filename" class="tab-name"></div>
+<div class="tab-bar">
+	<div class="tabs" id="tabs"></div>
+	<button id="btn-new-tab" title="New file (Ctrl+Alt+N)">+</button>
 </div>
+
+<template id="template-tab">
+	<div class="tab" title="">
+		<span class="tab-dot"></span>
+		<span class="tab-label"></span>
+		<button type="button" class="tab-close" title="Close (Ctrl+Alt+W)" aria-label="Close tab">×</button>
+	</div>
+</template>
 
 <div id="editor"></div>
 <div id="dropZone"></div>

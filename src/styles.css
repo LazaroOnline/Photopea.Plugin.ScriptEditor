@@ -9,6 +9,7 @@
 	--ps-accent: #31a8ff;
 	--ps-accent-hover: #57bbff;
 	--ps-text: #e6edf3;
+	--ps-text-dim: #8b949e;
 }
 html, body {
 	margin:0;
@@ -18,6 +19,7 @@ html, body {
 	background:#1e1e1e;
 	color:white;
 	font-family: var(--font-ui);
+	scrollbar-color: #272727 #4c4b4b;
 }
 .toolbar {
 	display: flex;
@@ -62,7 +64,7 @@ html, body {
 		padding-right: 0;
 		font-size: 12px;
 	}
-	button {
+	.toolbar button {
 		padding: 2px 4px !important;
 		height: 30px;
 		min-width: 30px;
@@ -197,15 +199,109 @@ a {
 	padding-left: 8px;
 	padding-right: 8px;
 }
-/* --------------------------------------- */
-.tab-name {
-	margin: 6px 15px;
-	font-size: 15px;
-	background: #353535;
-	border-radius: 7px 7px 0px 0px;
-	color: #d6c08d;
-	padding: 2px 12px;
+/* ---------- tab bar ---------- */
+.tab-bar {
+	display: flex;
+	align-items: stretch;
+	background: var(--ps-bg);
+	border-bottom: 1px solid var(--ps-border);
+	flex-shrink: 0;
+	/* height: 36px; */
 }
+.tabs {
+	display: flex;
+	align-items: stretch;
+	overflow-x: auto;
+	flex: 1;
+	min-width: 0;
+	scrollbar-width: thin;
+
+	/* overflow-y: hidden; */
+	flex-wrap: wrap;
+	max-height: 30vh;
+}
+.tabs::-webkit-scrollbar {
+	height: 4px;
+}
+.tabs::-webkit-scrollbar-thumb {
+	background: var(--ps-border-2);
+	border-radius: 4px;
+}
+.tabs::-webkit-scrollbar-thumb:hover {
+	background: #555;
+	scrollbar-color: #3b3b3b #5d5b5b;
+}
+.tab {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	min-height: 30px;
+	padding: 0 2px 0 4px;
+	border-right: 1px solid var(--ps-border);
+	font-size: 12.5px;
+	color: var(--ps-text-dim);
+	cursor: pointer;
+	white-space: nowrap;
+	flex-shrink: 0;
+	max-width: 220px;
+}
+.tab:hover {
+	color: var(--ps-text);
+	background: var(--ps-panel);
+}
+.tab.active {
+	color: var(--ps-text);
+	background: var(--ps-panel);
+	box-shadow: inset 0 -2px 0 var(--ps-accent);
+}
+.tab-label {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.dirty .tab-dot {
+	opacity: 1;
+}
+.tab-dot {
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: var(--ps-accent);
+	flex-shrink: 0;
+	opacity: 0;
+	transition: opacity 0.1s ease;
+}
+.tab-close {
+	border: none;
+	background: transparent;
+	color: var(--ps-text-dim);
+	font-size: 14px;
+	line-height: 1;
+	padding: 3px 5px;
+	border-radius: 4px;
+	opacity: 0.6;
+}
+.tab-close:hover {
+	background: var(--ps-border-2);
+	color: var(--ps-text);
+	opacity: 1;
+}
+#btn-new-tab {
+	flex-shrink: 0;
+	border: none;
+	border-radius: 0;
+	background: transparent;
+	color: var(--ps-text-dim);
+	font-size: 16px;
+	width: 28px;
+	padding: 0;
+}
+#btn-new-tab:hover {
+	background: var(--ps-panel);
+	color: var(--ps-text);
+}
+
+/* ----------------------------- */
+
 #editor {
 	height:calc(100% - 45px);
 }
