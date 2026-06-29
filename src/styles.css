@@ -133,7 +133,8 @@ a {
 	opacity: 0.6;
 }
 .dropdown-menu {
-	display: none;
+	opacity: 0;
+	visibility: hidden;
 	position: absolute;
 	top: calc(100% + 6px);
 	right: 0;
@@ -144,6 +145,11 @@ a {
 	padding: 4px;
 	box-shadow: 0 8px 24px rgba(0,0,0,0.45);
 	z-index: 40;
+	transform: translateY(-6px);
+	transition:
+		opacity 0.08s ease,
+		transform 0.08s ease,
+		visibility 0.08s;
 }
 .dropdown-menu.dropdown-menu-right {
 	left: auto;
@@ -152,6 +158,13 @@ a {
 }
 .dropdown-menu.open {
 	display: block;
+	visibility: visible;
+	opacity: 1;
+	transform: translateY(0);
+	transition:
+		opacity 0.08s ease,
+		transform 0.08s ease,
+		visibility 0.08s;
 }
 .dropdown-menu .dropdown-item {
 	display: flex;
