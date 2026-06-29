@@ -137,12 +137,14 @@ async function createEditor() {
 
 // Required when the focus is outside the Monaco editor, like the top buttons.
 document.addEventListener("keydown", (e) => {
-	if (e.ctrlKey && e.key === "Enter") { runCode(); }
-	if (e.ctrlKey && e.shiftKey && e.key.toUpperCase() === "S") { handleEvent(e, saveFileAs); }
-	if (e.ctrlKey && e.key.toUpperCase() === "S") { handleEvent(e, saveFileTry); }
-	if (e.ctrlKey && e.key.toUpperCase() === "O") { handleEvent(e, openFileDialogTry); }
-	if (e.ctrlKey && e.altKey && e.key.toUpperCase() === "N") { handleEvent(e, newBlankTab); }
-	if (e.ctrlKey && e.altKey && e.key.toUpperCase() === "W") { handleEvent(e, closeCurrentFile); }
+	var isMac = navigator.platform.toUpperCase().includes("MAC");
+	var ctrlKey = isMac ? e.metaKey : e.ctrlKey;
+	if (ctrlKey && e.key === "Enter") { runCode(); }
+	if (ctrlKey && e.shiftKey && e.key.toUpperCase() === "S") { handleEvent(e, saveFileAs); }
+	if (ctrlKey && e.key.toUpperCase() === "S") { handleEvent(e, saveFileTry); }
+	if (ctrlKey && e.key.toUpperCase() === "O") { handleEvent(e, openFileDialogTry); }
+	if (ctrlKey && e.altKey && e.key.toUpperCase() === "N") { handleEvent(e, newBlankTab); }
+	if (ctrlKey && e.altKey && e.key.toUpperCase() === "W") { handleEvent(e, closeCurrentFile); }
 	// Leave the Shift+Tab for the usual navigation when the focus is outside the editor:
 	// if (e.shiftKey && e.key.toUpperCase() === "TAB") { handleEvent(e, selectNextTab); }
 });
