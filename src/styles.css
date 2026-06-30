@@ -24,7 +24,7 @@ html, body {
 .toolbar {
 	display: flex;
 	align-items: center;
-	gap: 8px;
+	gap: 7px;
 	padding:5px 5px;
 	background: var(--ps-panel);
 	border-bottom: 1px solid var(--ps-border);
