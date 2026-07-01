@@ -2,6 +2,9 @@
 var editor;
 var files = []; // { id, name, dirty, model, viewState, handle }
 var activeId = null;
+var settings = {
+	editorWordWrap: true
+}
 
 var definitionFiles = [
 	// "types/photoshop-bundle.d.ts"
@@ -38,6 +41,7 @@ document.getElementById("btn-save").onclick = saveFileTry;
 document.getElementById("btn-save-as").onclick = saveFileAsClick;
 document.getElementById("btn-load").onclick = openFileDialogTry;
 document.getElementById("btn-new-tab").onclick = newBlankTab;
+document.getElementById("btn-word-wrap-toggle").onclick = toggleEditorWordWrapAndUpdateDom;
 
 document.getElementById("btn-demo-hello").onclick = () => createFileFromDemo("hello");
 document.getElementById("btn-demo-process-layers").onclick = () => createFileFromDemo("processLayers");
@@ -65,30 +69,8 @@ async function createEditor() {
 		}
 	});
 	monaco.editor.setTheme("my-vscode-dark");
-
-	// Load persisted files from local-storage:
-	var persisted = loadPersisted();
-	var startFile;
-	var hasPersistedFiles = persisted && persisted.files && persisted.files.length;
-	if (hasPersistedFiles) {
-		for (var persistedFile of persisted.files) {
-			createFile(persistedFile.name, persistedFile.content, {
-				 id: persistedFile.id
-				,dirty: persistedFile.dirty
-				,lastSavedContent: persistedFile.lastSavedContent
-			});
-		}
-		startFile = findFile(persisted?.activeId);
-		if (startFile == null) {
-			startFile = files[0];
-		}
-	}
-	if (startFile == null) {
-		var defaultContent = await getDemo("script");
-		startFile = createFile("script.jsx", defaultContent, { dirty: false });
-	}
-	setActiveTab(startFile.id);
-
+	await loadPersistedSettings();
+	var startFile = getCurrentTabFile();
 	var monacoElement = document.getElementById("editor");
 	var editorOptions = {
 		//  value: editorValue
@@ -105,7 +87,7 @@ async function createEditor() {
 		,glyphMargin: false		 // Hide breakpoints margin
 		,lineDecorationsWidth: 0 // Reduce decoration space
 		,lineNumbersMinChars: 3
-		,wordWrap: "on"
+		,wordWrap: settings.editorWordWrap? "on" : "off"
 	};
 	editor = monaco.editor.create(monacoElement, editorOptions);
 	editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, runCode);
@@ -200,6 +182,28 @@ async function loadTsConfigFiles() {
 
 function fetchText(url) {
 	return fetch(url).then(r => r.text());
+}
+
+function toggleEditorWordWrapAndUpdateDom() {
+	var newValue = toggleEditorWordWrap();
+	settings.editorWordWrap = newValue;
+	persistDebounced();
+	var btnToggle = document.getElementById("btn-word-wrap-toggle");
+	var tick = btnToggle.querySelector(".word-wrap-tick");
+	tick.style.display = newValue? "block" : "none";
+}
+
+function toggleEditorWordWrap() {
+	var currentTextValue = editor.getOption(monaco.editor.EditorOption.wordWrap);
+	var currentValue = currentTextValue == "on";
+	var newValue = !currentValue;
+	setEditorWordWrap(newValue);
+	return newValue;
+}
+
+function setEditorWordWrap(newValue = true) {
+	var newValueText = newValue? "on" : "off";
+	editor.updateOptions({ wordWrap: newValueText });
 }
 
 function runCode() {
@@ -444,6 +448,7 @@ var scriptAutoSaveLocalStorageKey = "script_auto_save";
 function persistNow() {
 	try {
 		var data = {
+			settings: settings,
 			activeId: activeId,
 			files: files.map(fileToJson)
 		};
@@ -472,7 +477,7 @@ function persistDebounced() {
 	persistTimer = setTimeout(persistNow, autoSaveMaxMs);
 }
 
-function loadPersisted() {
+function getPersistedSettings() {
 	try {
 		var raw = localStorage.getItem(scriptAutoSaveLocalStorageKey);
 		return raw ? JSON.parse(raw) : null;
@@ -480,6 +485,36 @@ function loadPersisted() {
 		console.warn("Could not read persisted editor state:", e);
 		return null;
 	}
+}
+
+async function loadPersistedSettings() {
+	var persistedSettings = getPersistedSettings();
+	await loadPersistedSettingsFrom(persistedSettings);
+}
+
+async function loadPersistedSettingsFrom(persisted) {
+	var startFile;
+	var hasPersistedFiles = persisted && persisted.files && persisted.files.length;
+	if (hasPersistedFiles) {
+		for (var persistedFile of persisted.files) {
+			createFile(persistedFile.name, persistedFile.content, {
+				 id: persistedFile.id
+				,dirty: persistedFile.dirty
+				,lastSavedContent: persistedFile.lastSavedContent
+			});
+		}
+		startFile = findFile(persisted?.activeId);
+		if (startFile == null) {
+			startFile = files[0];
+		}
+	}
+	if (startFile == null) {
+		var defaultContent = await getDemo("script");
+		startFile = createFile("script.jsx", defaultContent, { dirty: false });
+	}
+	setActiveTab(startFile.id);
+	// toggleEditorWordWrapAndUpdateDom(persisted.settings.wordWrap);
+	settings = { settings, ...persisted.settings };
 }
 
 // _____________________________________________________________

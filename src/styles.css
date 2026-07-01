@@ -119,8 +119,13 @@ a {
 	font-size: 10px;
 	padding-right: 2px;
 }
-.github-icon {
-	padding-left: 32px;
+.github-icon,
+.word-wrap-tick {
+	margin-left: auto;
+	padding-left: 6px;
+}
+.word-wrap-tick:hover {
+	color:#00aaff;
 }
 #btn-save-as {
 	width: 65px;
